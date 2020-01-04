@@ -35,7 +35,6 @@ class TeamController(private val repository: TeamRepository) {
             repository.delete(team)
             ResponseEntity<Void>(HttpStatus.OK)
         }.orElse(ResponseEntity.notFound().build())
-
     }
 
 }
