@@ -3,7 +3,7 @@ package com.solution.prode
 import com.ninjasquad.springmockk.MockkBean
 import com.solution.prode.model.Team
 import com.solution.prode.model.toJson
-import com.solution.prode.repository.TeamRepository
+import com.solution.prode.service.TeamService
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,13 +18,13 @@ import java.util.*
 class TeamControllerTests(@Autowired val mockMvc: MockMvc) {
 
     @MockkBean
-    private lateinit var repository: TeamRepository
+    private lateinit var service: TeamService
 
     @Test
     fun `List all teams`() {
         val someTeam = Team(1, "Argentina")
         val otherTeam = Team(2, "Brasil")
-        every { repository.findAll() } returns listOf(someTeam, otherTeam)
+        every { service.findAllTeams() } returns listOf(someTeam, otherTeam)
         mockMvc.perform(get("/api/v1/team/all")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
@@ -39,7 +39,7 @@ class TeamControllerTests(@Autowired val mockMvc: MockMvc) {
     fun `Retrieve one team`() {
         val id: Long = 1
         val someTeam = Team(id, "Argentina")
-        every { repository.findById(id) } returns Optional.of(someTeam)
+        every { service.findTeamById(id) } returns Optional.of(someTeam)
         mockMvc.perform(get("/api/v1/team/$id")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
@@ -51,7 +51,7 @@ class TeamControllerTests(@Autowired val mockMvc: MockMvc) {
     @Test
     fun `Create team`() {
         val someTeam = Team(1, "Argentina")
-        every { repository.save(someTeam) } returns someTeam
+        every { service.saveTeam(someTeam) } returns someTeam
         mockMvc.perform(post("/api/v1/team")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -69,8 +69,8 @@ class TeamControllerTests(@Autowired val mockMvc: MockMvc) {
         val newName = "Uruguay"
         val someTeam = Team(id, "Argentina")
         val updatedTeam = Team(id, newName)
-        every { repository.findById(id) } returns Optional.of(someTeam)
-        every { repository.save(updatedTeam) } returns updatedTeam
+        every { service.findTeamById(id) } returns Optional.of(someTeam)
+        every { service.saveTeam(updatedTeam) } returns updatedTeam
         mockMvc.perform(put("/api/v1/team/$id")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -82,8 +82,8 @@ class TeamControllerTests(@Autowired val mockMvc: MockMvc) {
     fun `Delete one team`() {
         val id: Long = 1
         val someTeam = Team(id, "Argentina")
-        every { repository.findById(id) } returns Optional.of(someTeam)
-        every { repository.delete(someTeam) } returns Unit
+        every { service.findTeamById(id) } returns Optional.of(someTeam)
+        every { service.deleteTeam(someTeam) } returns Unit
         mockMvc.perform(delete("/api/v1/team/$id")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
