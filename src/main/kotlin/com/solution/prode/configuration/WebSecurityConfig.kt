@@ -1,5 +1,6 @@
 package com.solution.prode.configuration
 
+import com.solution.prode.model.RoleName
 import com.solution.prode.security.JwtAuthenticationEntryPoint
 import com.solution.prode.security.JwtAuthenticationFilter
 import com.solution.prode.security.UserDetailsServiceImpl
@@ -26,6 +27,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     private val UserDetailsService: UserDetailsServiceImpl? = null
+
     @Autowired
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint? = null
 
@@ -80,10 +82,14 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/v*/auth/**")
+                .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v*/player/**", "/api/v*/team/**")
+                .antMatchers(HttpMethod.GET, "/player/**", "/team/**")
                 .permitAll()
+                .antMatchers(HttpMethod.PUT, "/player/**", "/team/**")
+                .hasRole(RoleName.ROLE_ADMIN.value)
+                .antMatchers(HttpMethod.DELETE, "/player/**", "/team/**")
+                .hasRole(RoleName.ROLE_ADMIN.value)
                 .anyRequest()
                 .authenticated()
         //Add custom JWT security filter
