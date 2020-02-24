@@ -8,6 +8,7 @@ import javax.persistence.Id
 
 @Entity
 data class Team(
+
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long,
         var name: String

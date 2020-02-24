@@ -1,42 +1,29 @@
 package com.solution.prode.controller
 
 import com.solution.prode.model.Team
+import com.solution.prode.routes.ALL
+import com.solution.prode.routes.ID_PARAM
+import com.solution.prode.routes.TEAM
 import com.solution.prode.service.TeamService
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/api/v1/team")
-class TeamController(private val service: TeamService) {
+@RequestMapping(TEAM)
+class TeamController(private val teamService: TeamService) {
 
-    @GetMapping("/all")
-    fun findAll() =
-            service.findAllTeams()
+    @GetMapping(ALL)
+    fun findAll() = teamService.findAllTeams()
 
-    @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long) =
-            service.findTeamById(id)
+    @GetMapping(ID_PARAM)
+    fun findById(@PathVariable id: Long) = teamService.findTeamById(id)
 
     @PostMapping
-    fun create(@Valid @RequestBody newTeam: Team): Team =
-            service.saveTeam(newTeam)
+    fun create(@Valid @RequestBody newTeam: Team): Team = teamService.saveTeam(newTeam)
 
-    @PutMapping("/{id}")
-    fun updateById(@PathVariable id: Long, @Valid @RequestBody newTeam: Team): ResponseEntity<Team> {
-        return service.findTeamById(id).map { existingTeam ->
-            val updatedTeam: Team = existingTeam.copy(name = newTeam.name)
-            ResponseEntity.ok().body(service.saveTeam(updatedTeam))
-        }.orElse(ResponseEntity.notFound().build())
-    }
+    @PutMapping(ID_PARAM)
+    fun updateById(@PathVariable id: Long, @Valid @RequestBody newTeam: Team): Team = teamService.updateTeam(id, newTeam)
 
-    @DeleteMapping("/{id}")
-    fun deleteById(@PathVariable(value = "id") id: Long): ResponseEntity<Void> {
-        return service.findTeamById(id).map { team  ->
-            service.deleteTeam(team)
-            ResponseEntity<Void>(HttpStatus.OK)
-        }.orElse(ResponseEntity.notFound().build())
-    }
-
+    @DeleteMapping(ID_PARAM)
+    fun deleteById(@PathVariable(value = "id") id: Long) = teamService.deleteTeam(id)
 }

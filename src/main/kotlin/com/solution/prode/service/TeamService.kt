@@ -1,19 +1,48 @@
 package com.solution.prode.service
 
+import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Team
 import com.solution.prode.repository.TeamRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class TeamService(private val repository: TeamRepository) {
+class TeamService {
 
-    fun findAllTeams(): Iterable<Team> = repository.findAll()
+    @Autowired
+    private lateinit var teamRepository: TeamRepository
 
-    fun findTeamById(id: Long): Optional<Team> = repository.findById(id)
+    private val entityName: String = "Team"
 
-    fun saveTeam(newTeam: Team) = repository.save(newTeam)
+    private val entityIdField: String = "id"
 
-    fun deleteTeam(team: Team) = repository.delete(team)
+    fun findAllTeams(): List<Team> = teamRepository.findAll().toList()
 
+    fun findTeamById(id: Long): Team? = teamRepository.findTeamById(id)
+
+    fun saveTeam(newTeam: Team): Team {
+
+        return teamRepository.save(newTeam)
+    }
+
+    fun updateTeam(teamId: Long, updatedTeam: Team): Team {
+
+        val team = validateTeamExists(teamId)
+
+        updatedTeam.id = team.id
+
+        teamRepository.save(updatedTeam)
+
+        return updatedTeam
+    }
+
+    fun deleteTeam(teamId: Long) {
+
+        val team = validateTeamExists(teamId)
+
+        teamRepository.delete(team)
+    }
+
+    private fun validateTeamExists(teamId: Long): Team =
+        teamRepository.findTeamById(teamId) ?: throw ResourceNotFoundException(entityName, entityIdField, teamId)
 }
