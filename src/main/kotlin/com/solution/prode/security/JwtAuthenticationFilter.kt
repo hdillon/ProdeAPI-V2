@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class JwtAuthenticationFilter : OncePerRequestFilter() {
+
     @Autowired
     private val jwtProvider: JwtProvider? = null
     @Autowired
@@ -21,7 +22,9 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+
         try {
+
             val jwt = getJwtFromRequest(request)
             if (StringUtils.hasText(jwt) && jwtProvider!!.validateToken(jwt)) {
                 val userId = jwtProvider.getUserIdFromJWT(jwt)
@@ -36,19 +39,24 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
                 SecurityContextHolder.getContext().authentication = authentication
             }
         } catch (ex: Exception) {
+
             Companion.logger.error("Could not set user authentication in security context", ex)
         }
+
         filterChain.doFilter(request, response)
     }
 
     private fun getJwtFromRequest(request: HttpServletRequest): String? {
+
         val bearerToken = request.getHeader("Authorization")
+
         return if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             bearerToken.substring(7, bearerToken.length)
         } else null
     }
 
     companion object {
+
         private val logger = LoggerFactory.getLogger(JwtAuthenticationFilter::class.java)
     }
 }

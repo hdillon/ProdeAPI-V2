@@ -1,7 +1,6 @@
 package com.solution.prode.security
 
 import io.jsonwebtoken.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +17,7 @@ class JwtProvider {
 
     @Value("\${app.tokenSecretKey}")
     private val secretKey: String? = null
+
     @Value("\${app.tokenExpiration}")
     private val tokenExpiration = 0
 
@@ -51,6 +51,7 @@ class JwtProvider {
     fun validateToken(authToken: String?): Boolean {
 
         try {
+
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken)
             return true
         } catch (ex: MalformedJwtException) {

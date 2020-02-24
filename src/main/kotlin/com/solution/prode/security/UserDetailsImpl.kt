@@ -10,7 +10,9 @@ import java.util.*
 import java.util.stream.Collectors
 
 
-class UserDetailsImpl(val id: Long?, val name: String?, private val username: String, @field:JsonIgnore val email: String?, @field:JsonIgnore private val password: String, private val authorities: Collection<GrantedAuthority>?) : UserDetails {
+class UserDetailsImpl(val id: Long?, val name: String?, private val username: String,
+                      @field:JsonIgnore val email: String?, @field:JsonIgnore private val password: String,
+                      private val authorities: Collection<GrantedAuthority>?) : UserDetails {
 
     override fun getUsername(): String {
         return username
@@ -52,8 +54,9 @@ class UserDetailsImpl(val id: Long?, val name: String?, private val username: St
     }
 
     companion object {
+
         fun create(user: User?): UserDetailsImpl {
-            val authorities: List<GrantedAuthority>? = user?.roles?.stream()?.map { role: Role -> SimpleGrantedAuthority(role.getName()!!.name) }?.collect(Collectors.toList())
+            val authorities: List<GrantedAuthority>? = user?.roles?.stream()?.map { role: Role -> SimpleGrantedAuthority(role.name!!.name) }?.collect(Collectors.toList())
             return UserDetailsImpl(
                     user?.id,
                     user?.name,
