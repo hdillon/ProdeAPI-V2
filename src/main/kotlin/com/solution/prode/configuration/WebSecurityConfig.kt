@@ -86,6 +86,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/player/**", "/team/**")
                 .permitAll()
+                .antMatchers(HttpMethod.POST, "/team/**")
+                .hasRole(RoleName.ROLE_ADMIN.value)
                 .antMatchers(HttpMethod.PUT, "/player/**", "/team/**")
                 .hasRole(RoleName.ROLE_ADMIN.value)
                 .antMatchers(HttpMethod.DELETE, "/player/**", "/team/**")
