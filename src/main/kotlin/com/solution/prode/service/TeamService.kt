@@ -1,5 +1,7 @@
 package com.solution.prode.service
 
+import com.solution.prode.constants.ErrorCode
+import com.solution.prode.exception.InternalException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Team
 import com.solution.prode.repository.TeamRepository
@@ -21,6 +23,8 @@ class TeamService {
     fun findTeamById(id: Long): Team? = teamRepository.findTeamById(id)
 
     fun saveTeam(newTeam: Team): Team {
+
+        validateTeamNotExists(newTeam.name)
 
         return teamRepository.save(newTeam)
     }
@@ -45,4 +49,14 @@ class TeamService {
 
     private fun validateTeamExists(teamId: Long): Team =
         teamRepository.findTeamById(teamId) ?: throw ResourceNotFoundException(entityName, entityIdField, teamId)
+
+    private fun validateTeamNotExists(teamName: String) {
+
+        val team = teamRepository.findTeamByName(teamName)
+
+        if(team != null) {
+
+            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "Team already exists")
+        }
+    }
 }

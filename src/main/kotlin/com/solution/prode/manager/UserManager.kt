@@ -39,6 +39,8 @@ class UserManager {
 
     fun signUp(signUpRequest: SignUpRequest): User {
 
+        validateUserNotExists(signUpRequest.username, signUpRequest.email)
+
         val user = User()
         user.email = signUpRequest.email
         user.name = signUpRequest.name
@@ -46,7 +48,7 @@ class UserManager {
         user.password = (passwordEncoder.encode(signUpRequest.password))
 
         val userRole: Role = roleService.findByName(RoleName.ROLE_USER)
-                ?: throw InternalException(ErrorCode.INTERNAL_ERROR.value, "User Role not exists.")
+                ?: throw InternalException(ErrorCode.INTERNAL_ERROR.value, "User Role not exists")
 
         user.roles = setOf(userRole)
 
@@ -67,5 +69,15 @@ class UserManager {
         val token: String = jwtProvider.generateToken(authentication)
 
         return LoginResponse(token)
+    }
+
+    private fun validateUserNotExists(username: String?, email: String) {
+
+        val user = userService.findByUserNameOrEmail(username, email)
+
+        if(user != null) {
+
+            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "User name or email already exists")
+        }
     }
 }

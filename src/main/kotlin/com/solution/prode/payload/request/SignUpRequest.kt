@@ -17,9 +17,9 @@ data class SignUpRequest (
     @NotBlank
     @Size(max = 40)
     @Email
-    var email: String? = null,
+    var email: String,
 
     @NotBlank
     @Size(min = 6, max = 20)
-    var password: String? = null
+    var password: String
 )
