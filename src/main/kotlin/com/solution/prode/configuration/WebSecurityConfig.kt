@@ -82,7 +82,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**")
+                .antMatchers("/auth/**", "/actuator/**")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/player/**", "/team/**")
                 .permitAll()
