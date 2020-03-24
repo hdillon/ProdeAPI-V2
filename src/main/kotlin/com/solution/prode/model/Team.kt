@@ -10,8 +10,13 @@ import javax.persistence.Id
 data class Team(
 
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long = -1L,
         var name: String
-)
+) {
+        companion object {
+                const val ENTITY_NAME = "Team"
+                const val ID = "id"
+        }
+}
 
 fun Team.toJson(): String = ObjectMapper().writeValueAsString(this)

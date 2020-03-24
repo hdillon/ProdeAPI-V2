@@ -2,17 +2,19 @@ package com.solution.prode.security
 
 import com.solution.prode.model.User
 import com.solution.prode.repository.UserRepository
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UserDetailsServiceImpl(private val userRepository: UserRepository) : UserDetailsService {
+class UserDetailsServiceImpl : UserDetailsService {
+
+    @Autowired
+    private lateinit var userRepository: UserRepository
 
     @Transactional
-    @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(usernameOrEmail: String): UserDetails {
 
         val user: User? = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)

@@ -14,22 +14,20 @@ class TeamService {
     @Autowired
     private lateinit var teamRepository: TeamRepository
 
-    private val entityName: String = "Team"
-
-    private val entityIdField: String = "id"
-
     fun findAllTeams(): List<Team> = teamRepository.findAll().toList()
 
-    fun findTeamById(id: Long): Team? = teamRepository.findTeamById(id)
+    fun findTeamById(id: Long): Team = validateTeamExists(id)
 
     fun saveTeam(newTeam: Team): Team {
 
-        validateTeamNotExists(newTeam.name)
+        validateTeamNameNotExists(newTeam.name)
 
         return teamRepository.save(newTeam)
     }
 
     fun updateTeam(teamId: Long, updatedTeam: Team): Team {
+
+        validateTeamNameNotExists(updatedTeam.name)
 
         val team = validateTeamExists(teamId)
 
@@ -47,16 +45,16 @@ class TeamService {
         teamRepository.delete(team)
     }
 
-    private fun validateTeamExists(teamId: Long): Team =
-        teamRepository.findTeamById(teamId) ?: throw ResourceNotFoundException(entityName, entityIdField, teamId)
+    fun validateTeamExists(teamId: Long): Team =
+        teamRepository.findTeamById(teamId) ?: throw ResourceNotFoundException(Team.ENTITY_NAME, Team.ID, teamId)
 
-    private fun validateTeamNotExists(teamName: String) {
+    fun validateTeamNameNotExists(teamName: String) {
 
         val team = teamRepository.findTeamByName(teamName)
 
         if(team != null) {
 
-            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "Team already exists")
+            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "Team name $teamName already exists")
         }
     }
 }

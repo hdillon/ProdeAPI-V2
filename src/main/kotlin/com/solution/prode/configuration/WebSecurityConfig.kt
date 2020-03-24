@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.BeanIds
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -16,9 +17,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    private val UserDetailsService: UserDetailsServiceImpl? = null
+    private val userDetailsServiceImpl: UserDetailsServiceImpl? = UserDetailsServiceImpl()
 
     @Autowired
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint? = null
@@ -37,20 +40,33 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         return JwtAuthenticationFilter()
     }
 
-    @Throws(Exception::class)
     public override fun configure(authenticationManagerBuilder: AuthenticationManagerBuilder) {
-
-        authenticationManagerBuilder
-                .userDetailsService(UserDetailsService)
-                .passwordEncoder(passwordEncoder())
+        authenticationManagerBuilder.authenticationProvider(authenticationProvider())
+        authenticationManagerBuilder.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder())
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Throws(Exception::class)
     override fun authenticationManagerBean(): AuthenticationManager {
 
         return super.authenticationManagerBean()
     }
+
+    @Bean
+    override fun userDetailsService(): UserDetailsService? {
+
+        return userDetailsServiceImpl
+    }
+
+    @Bean
+    fun authenticationProvider(): DaoAuthenticationProvider? {
+
+        val authProvider = DaoAuthenticationProvider()
+        authProvider.setUserDetailsService(userDetailsServiceImpl)
+        authProvider.setPasswordEncoder(passwordEncoder())
+
+        return authProvider
+    }
+
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -58,7 +74,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         return BCryptPasswordEncoder()
     }
 
-    @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
         http
                 .cors()
