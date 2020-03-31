@@ -22,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
@@ -67,7 +66,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         return authProvider
     }
 
-
     @Bean
     fun passwordEncoder(): PasswordEncoder {
 
@@ -109,7 +107,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 .hasRole(RoleName.ROLE_ADMIN.value)
                 .anyRequest()
                 .authenticated()
-        //Add custom JWT security filter
+        // Add custom JWT security filter
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
     }
 }

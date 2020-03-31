@@ -1,6 +1,6 @@
 package com.solution.prode.payload.response
 
-data class LoginResponse (
+data class LoginResponse(
 
     var token: String? = null
 )

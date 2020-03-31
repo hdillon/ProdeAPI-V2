@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @AutoConfigureMockMvc(addFilters = false)
 @Transactional
-class TeamControllerTests: BaseControllerTests() {
+class TeamControllerTests : BaseControllerTests() {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = ["/db/seeds/insertTeams.sql"])

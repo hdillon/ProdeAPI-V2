@@ -9,9 +9,9 @@ import javax.persistence.Id
 @Entity
 data class Team(
 
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long = -1L,
-        var name: String
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = -1L,
+    var name: String
 ) {
         companion object {
                 const val ENTITY_NAME = "Team"

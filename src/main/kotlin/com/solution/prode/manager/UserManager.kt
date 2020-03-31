@@ -1,6 +1,6 @@
 package com.solution.prode.manager
 
-import com.solution.prode.constants.ErrorCode
+import com.solution.prode.constants.ErrorCodes
 import com.solution.prode.exception.InternalException
 import com.solution.prode.model.Role
 import com.solution.prode.model.RoleName
@@ -48,7 +48,7 @@ class UserManager {
         user.password = (passwordEncoder.encode(signUpRequest.password))
 
         val userRole: Role = roleService.findByName(RoleName.ROLE_USER)
-                ?: throw InternalException(ErrorCode.INTERNAL_ERROR.value, "User Role not exists")
+                ?: throw InternalException(ErrorCodes.INTERNAL_ERROR.value, "User Role not exists")
 
         user.roles = setOf(userRole)
 
@@ -75,9 +75,9 @@ class UserManager {
 
         val user = userService.findByUserNameOrEmail(username, email)
 
-        if(user != null) {
+        if (user != null) {
 
-            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "User name or email already exists")
+            throw InternalException(ErrorCodes.INTERNAL_ERROR.value, "User name or email already exists")
         }
     }
 }

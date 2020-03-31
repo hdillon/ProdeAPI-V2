@@ -3,16 +3,20 @@ package com.solution.prode.security
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.solution.prode.model.Role
 import com.solution.prode.model.User
+import java.util.Objects
+import java.util.stream.Collectors
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.util.*
-import java.util.stream.Collectors
 
-
-class UserDetailsImpl(val id: Long?, val name: String?, private val username: String,
-                      @field:JsonIgnore val email: String?, @field:JsonIgnore private val password: String,
-                      private val authorities: Collection<GrantedAuthority>?) : UserDetails {
+class UserDetailsImpl(
+    val id: Long?,
+    val name: String?,
+    private val username: String,
+    @field:JsonIgnore val email: String?,
+    @field:JsonIgnore private val password: String,
+    private val authorities: Collection<GrantedAuthority>?
+) : UserDetails {
 
     override fun getUsername(): String {
         return username
@@ -67,5 +71,4 @@ class UserDetailsImpl(val id: Long?, val name: String?, private val username: St
             )
         }
     }
-
 }

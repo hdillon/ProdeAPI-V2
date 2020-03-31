@@ -1,6 +1,6 @@
 package com.solution.prode.service
 
-import com.solution.prode.constants.ErrorCode
+import com.solution.prode.constants.ErrorCodes
 import com.solution.prode.exception.InternalException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Team
@@ -52,9 +52,9 @@ class TeamService {
 
         val team = teamRepository.findTeamByName(teamName)
 
-        if(team != null) {
+        if (team != null) {
 
-            throw InternalException(ErrorCode.INTERNAL_ERROR.value, "Team name $teamName already exists")
+            throw InternalException(ErrorCodes.INTERNAL_ERROR.value, "Team name $teamName already exists")
         }
     }
 }

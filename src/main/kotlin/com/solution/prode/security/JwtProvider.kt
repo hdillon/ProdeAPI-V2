@@ -1,15 +1,19 @@
 package com.solution.prode.security
 
-import io.jsonwebtoken.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
-import java.security.Key;
-import java.util.Date;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.UnsupportedJwtException
+import java.security.Key
+import java.util.Date
+import javax.crypto.spec.SecretKeySpec
+import javax.xml.bind.DatatypeConverter
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.core.Authentication
+import org.springframework.stereotype.Component
 
 @Component
 class JwtProvider {
@@ -26,8 +30,8 @@ class JwtProvider {
         val now = Date()
         val expiryDate = Date(now.getTime() + tokenExpiration)
         // To generate new valid secretkeys:
-        //SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS51
-        //String base64Key = Encoders.BASE64.encode(key.getEncoded());
+        // SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS51
+        // String base64Key = Encoders.BASE64.encode(key.getEncoded());
         val apiKeySecretBytes: ByteArray = DatatypeConverter.parseBase64Binary(secretKey)
         val signingKey: Key = SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS512.getJcaName())
         return Jwts.builder()

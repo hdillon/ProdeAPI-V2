@@ -6,13 +6,13 @@ import com.solution.prode.payload.request.LoginRequest
 import com.solution.prode.payload.request.SignUpRequest
 import com.solution.prode.payload.response.LoginResponse
 import com.solution.prode.routes.AUTH
-import com.solution.prode.routes.SIGNUP
 import com.solution.prode.routes.LOGIN
-import org.springframework.web.bind.annotation.RequestBody
+import com.solution.prode.routes.SIGNUP
+import javax.validation.Valid
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.validation.Valid
 
 @RestController
 @RequestMapping(AUTH)
