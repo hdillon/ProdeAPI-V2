@@ -45,7 +45,7 @@ class TeamService {
         teamRepository.delete(team)
     }
 
-    fun validateTeamExists(teamId: Long): Team =
+    fun validateTeamExists(teamId: Long) =
         teamRepository.findTeamById(teamId) ?: throw ResourceNotFoundException(Team.ENTITY_NAME, Team.ID, teamId)
 
     fun validateTeamNameNotExists(teamName: String) {

@@ -26,5 +26,13 @@ CREATE TABLE team (
   name varchar(50) NOT NULL UNIQUE
 );
 
+CREATE TABLE player (
+  id SERIAL PRIMARY KEY,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  team_id int NOT NULL,
+  CONSTRAINT player_team_id_fk FOREIGN KEY (team_id) REFERENCES team (id)
+);
+
 INSERT  INTO role(name) VALUES('ROLE_USER');
 INSERT  INTO role(name) VALUES('ROLE_ADMIN');
