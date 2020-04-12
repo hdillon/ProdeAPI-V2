@@ -38,17 +38,17 @@ class TeamControllerTests : BaseControllerTests() {
         val teamThree = Team(idThree, nameThree)
 
         val request = get(TEAM + ALL)
-                .accept(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("\$.[0].id").value(teamOne.id))
-                .andExpect(jsonPath("\$.[0].name").value(teamOne.name))
-                .andExpect(jsonPath("\$.[1].id").value(teamTwo.id))
-                .andExpect(jsonPath("\$.[1].name").value(teamTwo.name))
-                .andExpect(jsonPath("\$.[2].id").value(teamThree.id))
-                .andExpect(jsonPath("\$.[2].name").value(teamThree.name))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.[0].id").value(teamOne.id))
+            .andExpect(jsonPath("\$.[0].name").value(teamOne.name))
+            .andExpect(jsonPath("\$.[1].id").value(teamTwo.id))
+            .andExpect(jsonPath("\$.[1].name").value(teamTwo.name))
+            .andExpect(jsonPath("\$.[2].id").value(teamThree.id))
+            .andExpect(jsonPath("\$.[2].name").value(teamThree.name))
     }
 
     @Test
@@ -60,13 +60,13 @@ class TeamControllerTests : BaseControllerTests() {
         val someTeam = Team(id, name)
 
         val request = get(TEAM + ID_PARAM, id.toString())
-                .accept(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("\$.id").value(someTeam.id))
-                .andExpect(jsonPath("\$.name").value(someTeam.name))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").value(someTeam.id))
+            .andExpect(jsonPath("\$.name").value(someTeam.name))
     }
 
     @Test
@@ -76,28 +76,28 @@ class TeamControllerTests : BaseControllerTests() {
         val newTeam = Team(name = name)
 
         var request = post(TEAM)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(newTeam.toJson())
-                .characterEncoding(Charsets.UTF_8.name())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(newTeam.toJson())
+            .characterEncoding(Charsets.UTF_8.name())
 
         val responseAsString = mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("\$.id").isNotEmpty)
-                .andExpect(jsonPath("\$.name").value(newTeam.name))
-                .andReturn().response.contentAsString
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").isNotEmpty)
+            .andExpect(jsonPath("\$.name").value(newTeam.name))
+            .andReturn().response.contentAsString
 
         val responseTeam = objectMapper.readValue(responseAsString, Team::class.java)
 
         request = get(TEAM + ID_PARAM, responseTeam.id)
-                .accept(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("\$.id").value(responseTeam.id))
-                .andExpect(jsonPath("\$.name").value(newTeam.name))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").value(responseTeam.id))
+            .andExpect(jsonPath("\$.name").value(newTeam.name))
     }
 
     @Test
@@ -109,23 +109,23 @@ class TeamControllerTests : BaseControllerTests() {
         val updatedTeam = Team(id, newName)
 
         var request = put(TEAM + ID_PARAM, id.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(updatedTeam.toJson())
-                .characterEncoding(Charsets.UTF_8.name())
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(updatedTeam.toJson())
+            .characterEncoding(Charsets.UTF_8.name())
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("\$.id").value(updatedTeam.id))
-                .andExpect(jsonPath("\$.name").value(updatedTeam.name))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(updatedTeam.id))
+            .andExpect(jsonPath("\$.name").value(updatedTeam.name))
 
         request = get(TEAM + ID_PARAM, id.toString())
-                .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("\$.id").value(updatedTeam.id))
-                .andExpect(jsonPath("\$.name").value(updatedTeam.name))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(updatedTeam.id))
+            .andExpect(jsonPath("\$.name").value(updatedTeam.name))
     }
 
     @Test
@@ -137,23 +137,23 @@ class TeamControllerTests : BaseControllerTests() {
         val someTeam = Team(id, name)
 
         var request = get(TEAM + ID_PARAM, id.toString())
-                .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("\$.id").value(someTeam.id))
-                .andExpect(jsonPath("\$.name").value(someTeam.name))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(someTeam.id))
+            .andExpect(jsonPath("\$.name").value(someTeam.name))
 
         request = delete(TEAM + ID_PARAM, id.toString())
-                .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isOk)
+            .andExpect(status().isOk)
 
         request = get(TEAM + ID_PARAM, id.toString())
-                .contentType(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
-                .andExpect(status().isNotFound)
+            .andExpect(status().isNotFound)
     }
 }

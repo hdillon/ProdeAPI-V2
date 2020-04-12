@@ -1,8 +1,14 @@
 package com.solution.prode.queries
 
-const val GET_USER_BY_ID: String = """
+import org.springframework.stereotype.Component
+
+@Component
+class UserQueries {
+
+    val selectById = """
     SELECT *
     FROM users
-    WHERE users.id = :id
+    WHERE users.id = ?
     LIMIT 1;
-"""
+    """.trimIndent()
+}
