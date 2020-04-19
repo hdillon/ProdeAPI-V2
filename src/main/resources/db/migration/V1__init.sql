@@ -34,5 +34,10 @@ CREATE TABLE player (
   CONSTRAINT player_team_id_fk FOREIGN KEY (team_id) REFERENCES team (id)
 );
 
+CREATE TABLE competition (
+  id SERIAL PRIMARY KEY,
+  name varchar(50) NOT NULL UNIQUE
+);
+
 INSERT  INTO role(name) VALUES('ROLE_USER');
 INSERT  INTO role(name) VALUES('ROLE_ADMIN');
