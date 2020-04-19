@@ -14,13 +14,13 @@ data class Player(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = -1L,
 
-    @JsonProperty("first_name")
+    @field:JsonProperty("first_name")
     var firstName: String,
 
-    @JsonProperty("last_name")
+    @field:JsonProperty("last_name")
     var lastName: String,
 
-    @JsonProperty("team_id")
+    @field:JsonProperty("team_id")
     var teamId: Long
 
 ) {

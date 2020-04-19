@@ -1,7 +1,6 @@
 package com.solution.prode.service
 
-import com.solution.prode.constants.ErrorCodes
-import com.solution.prode.exception.InternalException
+import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Player
 import com.solution.prode.repository.PlayerRepository
@@ -17,7 +16,7 @@ class PlayerService {
     @Autowired
     private lateinit var teamService: TeamService
 
-    fun findAll(): List<Player> = playerRepository.findAll().toList()
+    fun findAll(): List<Player> = playerRepository.findAllByOrderByIdAsc().toList()
 
     fun findById(id: Long): Player = validatePlayerExists(id)
 
@@ -64,7 +63,7 @@ class PlayerService {
 
         if (player != null) {
 
-            throw InternalException(ErrorCodes.INTERNAL_ERROR.value, "Player ${newPlayer.firstName} ${newPlayer.lastName} already exists")
+            throw BadRequestException("Player ${newPlayer.firstName} ${newPlayer.lastName} already exists")
         }
     }
 }

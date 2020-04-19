@@ -1,6 +1,5 @@
 package com.solution.prode.service
 
-import com.solution.prode.constants.ErrorCodes
 import com.solution.prode.exception.InternalException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Team
@@ -54,7 +53,7 @@ class TeamService {
 
         if (team != null) {
 
-            throw InternalException(ErrorCodes.INTERNAL_ERROR.value, "Team name $teamName already exists")
+            throw InternalException("Team name $teamName already exists")
         }
     }
 }
