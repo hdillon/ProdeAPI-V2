@@ -6,7 +6,6 @@ import com.solution.prode.routes.ALL
 import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.TEAM
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -16,10 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.transaction.annotation.Transactional
 
-@AutoConfigureMockMvc(addFilters = false)
-@Transactional
 class TeamControllerTests : BaseControllerTests() {
 
     @Test
@@ -27,11 +23,11 @@ class TeamControllerTests : BaseControllerTests() {
     fun `List all teams`() {
 
         val idOne = 100L
-        val nameOne = "team-a"
+        val nameOne = "team_a"
         val idTwo = 101L
-        val nameTwo = "team-b"
+        val nameTwo = "team_b"
         val idThree = 102L
-        val nameThree = "team-c"
+        val nameThree = "team_c"
 
         val teamOne = Team(idOne, nameOne)
         val teamTwo = Team(idTwo, nameTwo)
@@ -56,7 +52,7 @@ class TeamControllerTests : BaseControllerTests() {
     fun `Retrieve one team`() {
 
         val id: Long = 100
-        val name = "team-a"
+        val name = "team_a"
         val someTeam = Team(id, name)
 
         val request = get(TEAM + ID_PARAM, id.toString())
@@ -72,7 +68,7 @@ class TeamControllerTests : BaseControllerTests() {
     @Test
     fun `Create team`() {
 
-        val name = "team-z"
+        val name = "team_z"
         val newTeam = Team(name = name)
 
         var request = post(TEAM)
@@ -105,7 +101,7 @@ class TeamControllerTests : BaseControllerTests() {
     fun `Update one team`() {
 
         val id: Long = 100
-        val newName = "team-z"
+        val newName = "team_z"
         val updatedTeam = Team(id, newName)
 
         var request = put(TEAM + ID_PARAM, id.toString())
@@ -133,7 +129,7 @@ class TeamControllerTests : BaseControllerTests() {
     fun `Delete one team`() {
 
         val id: Long = 100
-        val name = "team-a"
+        val name = "team_a"
         val someTeam = Team(id, name)
 
         var request = get(TEAM + ID_PARAM, id.toString())

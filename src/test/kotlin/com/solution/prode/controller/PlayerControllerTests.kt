@@ -8,15 +8,11 @@ import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.PLAYER
 import com.solution.prode.routes.TEAM
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.transaction.annotation.Transactional
 
-@AutoConfigureMockMvc(addFilters = false)
-@Transactional
 class PlayerControllerTests : BaseControllerTests() {
 
     @Test
@@ -129,7 +125,7 @@ class PlayerControllerTests : BaseControllerTests() {
     fun `Update one player`() {
 
         val id: Long = 100
-        val newName = "team-z"
+        val newName = "team_z"
         val updatedTeam = Team(id, newName)
 
         var request = MockMvcRequestBuilders.put(TEAM + ID_PARAM, id.toString())
@@ -157,7 +153,7 @@ class PlayerControllerTests : BaseControllerTests() {
     fun `Delete one player`() {
 
         val id: Long = 100
-        val name = "team-a"
+        val name = "team_a"
         val someTeam = Team(id, name)
 
         var request = MockMvcRequestBuilders.get(TEAM + ID_PARAM, id.toString())
