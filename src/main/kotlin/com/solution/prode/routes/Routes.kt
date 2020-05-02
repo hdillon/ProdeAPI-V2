@@ -11,6 +11,9 @@ const val BY_TEAM = "/by-team"
 
 const val COMPETITION = "/competition"
 
+const val PRODE = "/prode"
+const val BY_COMPETITION = "/by-competition"
+
 const val ALL = "/all"
 
 const val ID_PARAM = "/{id}"

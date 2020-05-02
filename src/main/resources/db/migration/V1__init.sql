@@ -39,5 +39,12 @@ CREATE TABLE competition (
   name varchar(50) NOT NULL UNIQUE
 );
 
+CREATE TABLE prode (
+  id SERIAL PRIMARY KEY,
+  name varchar(50) NOT NULL,
+  competition_id int NOT NULL,
+  CONSTRAINT prode_competition_id_fk FOREIGN KEY (competition_id) REFERENCES competition (id)
+);
+
 INSERT  INTO role(name) VALUES('ROLE_USER');
 INSERT  INTO role(name) VALUES('ROLE_ADMIN');
