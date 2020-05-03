@@ -1,12 +1,10 @@
 package com.solution.prode.controller
 
 import com.solution.prode.model.Player
-import com.solution.prode.model.Team
 import com.solution.prode.model.toJson
 import com.solution.prode.routes.ALL
 import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.PLAYER
-import com.solution.prode.routes.TEAM
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
@@ -121,56 +119,74 @@ class PlayerControllerTests : BaseControllerTests() {
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = ["/db/seeds/insertTeams.sql"])
+    @Sql(
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        value = ["/db/seeds/insertTeams.sql", "/db/seeds/insertPlayers.sql"]
+    )
     fun `Update one player`() {
 
         val id: Long = 100
-        val newName = "team_z"
-        val updatedTeam = Team(id, newName)
+        val firstName = "first_name_z"
+        val lastName = "last_name_z"
+        val teamId = 101L
 
-        var request = MockMvcRequestBuilders.put(TEAM + ID_PARAM, id.toString())
+        val updatedPlayer = Player(id, firstName, lastName, teamId)
+
+        var request = MockMvcRequestBuilders.put(PLAYER + ID_PARAM, id.toString())
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(updatedTeam.toJson())
+            .content(updatedPlayer.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedTeam.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.name").value(updatedTeam.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedPlayer.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(updatedPlayer.firstName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(updatedPlayer.lastName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(updatedPlayer.teamId))
 
-        request = MockMvcRequestBuilders.get(TEAM + ID_PARAM, id.toString())
+        request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedTeam.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.name").value(updatedTeam.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedPlayer.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(updatedPlayer.firstName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(updatedPlayer.lastName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(updatedPlayer.teamId))
     }
 
     @Test
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = ["/db/seeds/insertTeams.sql"])
+    @Sql(
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        value = ["/db/seeds/insertTeams.sql", "/db/seeds/insertPlayers.sql"]
+    )
     fun `Delete one player`() {
 
         val id: Long = 100
-        val name = "team_a"
-        val someTeam = Team(id, name)
+        val firstName = "first_name_a"
+        val lastName = "last_name_a"
+        val teamId = 100L
 
-        var request = MockMvcRequestBuilders.get(TEAM + ID_PARAM, id.toString())
+        val somePlayer = Player(id, firstName, lastName, teamId)
+
+        var request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(someTeam.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.name").value(someTeam.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(somePlayer.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(somePlayer.firstName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(somePlayer.lastName))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(somePlayer.teamId))
 
-        request = MockMvcRequestBuilders.delete(TEAM + ID_PARAM, id.toString())
+        request = MockMvcRequestBuilders.delete(PLAYER + ID_PARAM, id.toString())
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isOk)
 
-        request = MockMvcRequestBuilders.get(TEAM + ID_PARAM, id.toString())
+        request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
             .contentType(MediaType.APPLICATION_JSON)
 
         mockMvc.perform(request)
