@@ -46,5 +46,14 @@ CREATE TABLE prode (
   CONSTRAINT prode_competition_id_fk FOREIGN KEY (competition_id) REFERENCES competition (id)
 );
 
+CREATE TABLE prode_user (
+  prode_id int NOT NULL,
+  user_id int NOT NULL,
+  points int NOT NULL DEFAULT 0,
+  CONSTRAINT prode_user_pk PRIMARY KEY (prode_id, user_id),
+  CONSTRAINT prode_user_prode_id_fk FOREIGN KEY (prode_id) REFERENCES prode (id),
+  CONSTRAINT prode_user_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
 INSERT  INTO role(name) VALUES('ROLE_USER');
 INSERT  INTO role(name) VALUES('ROLE_ADMIN');
