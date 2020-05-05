@@ -55,5 +55,37 @@ CREATE TABLE prode_user (
   CONSTRAINT prode_user_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
+CREATE TABLE phase (
+  id SERIAL PRIMARY KEY,
+  name varchar(30) NOT NULL UNIQUE
+);
+
+CREATE TABLE groups (
+  id SERIAL PRIMARY KEY,
+  name varchar(30) NOT NULL UNIQUE
+);
+
+CREATE TABLE game (
+  id SERIAL PRIMARY KEY,
+  local_team_id int NOT NULL,
+  local_team_goals smallint NOT NULL DEFAULT 0,
+  visiting_team_id int NOT NULL,
+  visiting_team_goals smallint NOT NULL DEFAULT 0,
+  phase_id int NOT NULL,
+  group_id int NOT NULL,
+  CONSTRAINT game_local_team_id_fk FOREIGN KEY (local_team_id) REFERENCES team (id),
+  CONSTRAINT game_visiting_team_id_fk FOREIGN KEY (visiting_team_id) REFERENCES team (id),
+  CONSTRAINT game_phase_id_fk FOREIGN KEY (phase_id) REFERENCES phase (id),
+  CONSTRAINT game_group_id_fk FOREIGN KEY (group_id) REFERENCES groups (id)
+);
+
+CREATE TABLE prediction (
+  user_id int NOT NULL,
+  game_id int NOT NULL,
+  local_team_goals smallint NOT NULL DEFAULT 0,
+  visiting_team_goals smallint NOT NULL DEFAULT 0,
+  CONSTRAINT prediction_pk PRIMARY KEY (user_id, game_id)
+);
+
 INSERT  INTO role(name) VALUES('ROLE_USER');
 INSERT  INTO role(name) VALUES('ROLE_ADMIN');
