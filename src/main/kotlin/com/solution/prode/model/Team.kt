@@ -1,6 +1,7 @@
 package com.solution.prode.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import java.io.Serializable
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -15,7 +16,7 @@ data class Team(
 
     var name: String = ""
 
-) {
+) : Serializable {
     companion object {
         const val ENTITY_NAME = "Team"
         const val ID = "id"

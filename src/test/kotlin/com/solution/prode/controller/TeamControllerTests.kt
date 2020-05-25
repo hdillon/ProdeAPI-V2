@@ -5,7 +5,9 @@ import com.solution.prode.model.toJson
 import com.solution.prode.routes.ALL
 import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.TEAM
+import com.solution.prode.service.TeamService
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
@@ -18,9 +20,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class TeamControllerTests : BaseControllerTests() {
 
+    @Autowired
+    private lateinit var teamService: TeamService
+
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = ["/db/seeds/insertTeams.sql"])
     fun `List all teams`() {
+        // TODO: Fix me!
+        teamService.cleanTeamsCache()
 
         val idOne = 100L
         val nameOne = "team_a"
