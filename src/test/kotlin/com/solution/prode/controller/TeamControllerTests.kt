@@ -1,14 +1,15 @@
 package com.solution.prode.controller
 
+import com.solution.prode.constants.CacheKeys.ALL_TEAMS_KEY
+import com.solution.prode.manager.ProdeCacheManager
 import com.solution.prode.model.Team
 import com.solution.prode.model.toJson
 import com.solution.prode.routes.ALL
 import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.TEAM
-import com.solution.prode.service.TeamService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -21,13 +22,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class TeamControllerTests : BaseControllerTests() {
 
     @Autowired
-    private lateinit var teamService: TeamService
+    private lateinit var prodeCacheManager: ProdeCacheManager
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, value = ["/db/seeds/insertTeams.sql"])
     fun `List all teams`() {
-        // TODO: Fix me!
-        teamService.cleanTeamsCache()
+
+        prodeCacheManager.evictAllTeams(ALL_TEAMS_KEY)
 
         val idOne = 100L
         val nameOne = "team_a"
@@ -41,11 +42,11 @@ class TeamControllerTests : BaseControllerTests() {
         val teamThree = Team(idThree, nameThree)
 
         val request = get(TEAM + ALL)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].id").value(teamOne.id))
             .andExpect(jsonPath("\$.[0].name").value(teamOne.name))
             .andExpect(jsonPath("\$.[1].id").value(teamTwo.id))
@@ -63,11 +64,11 @@ class TeamControllerTests : BaseControllerTests() {
         val someTeam = Team(id, name)
 
         val request = get(TEAM + ID_PARAM, id.toString())
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(someTeam.id))
             .andExpect(jsonPath("\$.name").value(someTeam.name))
     }
@@ -79,14 +80,14 @@ class TeamControllerTests : BaseControllerTests() {
         val newTeam = Team(name = name)
 
         var request = post(TEAM)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(newTeam.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
         val responseAsString = mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").isNotEmpty)
             .andExpect(jsonPath("\$.name").value(newTeam.name))
             .andReturn().response.contentAsString
@@ -94,11 +95,11 @@ class TeamControllerTests : BaseControllerTests() {
         val responseTeam = objectMapper.readValue(responseAsString, Team::class.java)
 
         request = get(TEAM + ID_PARAM, responseTeam.id)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(responseTeam.id))
             .andExpect(jsonPath("\$.name").value(newTeam.name))
     }
@@ -112,8 +113,8 @@ class TeamControllerTests : BaseControllerTests() {
         val updatedTeam = Team(id, newName)
 
         var request = put(TEAM + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(updatedTeam.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
@@ -123,7 +124,7 @@ class TeamControllerTests : BaseControllerTests() {
             .andExpect(jsonPath("\$.name").value(updatedTeam.name))
 
         request = get(TEAM + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
@@ -140,7 +141,7 @@ class TeamControllerTests : BaseControllerTests() {
         val someTeam = Team(id, name)
 
         var request = get(TEAM + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
@@ -148,13 +149,13 @@ class TeamControllerTests : BaseControllerTests() {
             .andExpect(jsonPath("\$.name").value(someTeam.name))
 
         request = delete(TEAM + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
 
         request = get(TEAM + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isNotFound)

@@ -6,10 +6,12 @@ import com.solution.prode.routes.ALL
 import com.solution.prode.routes.ID_PARAM
 import com.solution.prode.routes.PLAYER
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class PlayerControllerTests : BaseControllerTests() {
 
@@ -36,23 +38,23 @@ class PlayerControllerTests : BaseControllerTests() {
         val lastNameThree = "last_name_c"
 
         val request = MockMvcRequestBuilders.get(PLAYER + ALL)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[0].id").value(playerIdOne))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[0].first_name").value(firstNameOne))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[0].last_name").value(lastNameOne))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[0].team_id").value(teamIdOne))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[1].id").value(playerIdTwo))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[1].first_name").value(firstNameTwo))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[1].last_name").value(lastNameTwo))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[1].team_id").value(teamIdTwo))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[2].id").value(playerIdThree))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[2].first_name").value(firstNameThree))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[2].last_name").value(lastNameThree))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.[2].team_id").value(teamIdOne))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(APPLICATION_JSON))
+            .andExpect(jsonPath("\$.[0].id").value(playerIdOne))
+            .andExpect(jsonPath("\$.[0].first_name").value(firstNameOne))
+            .andExpect(jsonPath("\$.[0].last_name").value(lastNameOne))
+            .andExpect(jsonPath("\$.[0].team_id").value(teamIdOne))
+            .andExpect(jsonPath("\$.[1].id").value(playerIdTwo))
+            .andExpect(jsonPath("\$.[1].first_name").value(firstNameTwo))
+            .andExpect(jsonPath("\$.[1].last_name").value(lastNameTwo))
+            .andExpect(jsonPath("\$.[1].team_id").value(teamIdTwo))
+            .andExpect(jsonPath("\$.[2].id").value(playerIdThree))
+            .andExpect(jsonPath("\$.[2].first_name").value(firstNameThree))
+            .andExpect(jsonPath("\$.[2].last_name").value(lastNameThree))
+            .andExpect(jsonPath("\$.[2].team_id").value(teamIdOne))
     }
 
     @Test
@@ -68,15 +70,15 @@ class PlayerControllerTests : BaseControllerTests() {
         val teamId = 100L
 
         val request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, playerId)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(playerId))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(teamId))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").value(playerId))
+            .andExpect(jsonPath("\$.first_name").value(firstName))
+            .andExpect(jsonPath("\$.last_name").value(lastName))
+            .andExpect(jsonPath("\$.team_id").value(teamId))
     }
 
     @Test
@@ -90,32 +92,32 @@ class PlayerControllerTests : BaseControllerTests() {
         val newPlayer = Player(firstName = firstName, lastName = lastName, teamId = teamId)
 
         var request = MockMvcRequestBuilders.post(PLAYER)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(newPlayer.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
         val responseAsString = mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").isNotEmpty)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(newPlayer.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(newPlayer.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(newPlayer.teamId))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").isNotEmpty)
+            .andExpect(jsonPath("\$.first_name").value(newPlayer.firstName))
+            .andExpect(jsonPath("\$.last_name").value(newPlayer.lastName))
+            .andExpect(jsonPath("\$.team_id").value(newPlayer.teamId))
             .andReturn().response.contentAsString
 
         val responsePlayer = objectMapper.readValue(responseAsString, Player::class.java)
 
         request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, responsePlayer.id)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(responsePlayer.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(newPlayer.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(newPlayer.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(newPlayer.teamId))
+            .andExpect(status().isOk)
+            .andExpect(content().contentType(APPLICATION_JSON))
+            .andExpect(jsonPath("\$.id").value(responsePlayer.id))
+            .andExpect(jsonPath("\$.first_name").value(newPlayer.firstName))
+            .andExpect(jsonPath("\$.last_name").value(newPlayer.lastName))
+            .andExpect(jsonPath("\$.team_id").value(newPlayer.teamId))
     }
 
     @Test
@@ -133,27 +135,27 @@ class PlayerControllerTests : BaseControllerTests() {
         val updatedPlayer = Player(id, firstName, lastName, teamId)
 
         var request = MockMvcRequestBuilders.put(PLAYER + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(updatedPlayer.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedPlayer.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(updatedPlayer.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(updatedPlayer.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(updatedPlayer.teamId))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(updatedPlayer.id))
+            .andExpect(jsonPath("\$.first_name").value(updatedPlayer.firstName))
+            .andExpect(jsonPath("\$.last_name").value(updatedPlayer.lastName))
+            .andExpect(jsonPath("\$.team_id").value(updatedPlayer.teamId))
 
         request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(updatedPlayer.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(updatedPlayer.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(updatedPlayer.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(updatedPlayer.teamId))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(updatedPlayer.id))
+            .andExpect(jsonPath("\$.first_name").value(updatedPlayer.firstName))
+            .andExpect(jsonPath("\$.last_name").value(updatedPlayer.lastName))
+            .andExpect(jsonPath("\$.team_id").value(updatedPlayer.teamId))
     }
 
     @Test
@@ -171,25 +173,25 @@ class PlayerControllerTests : BaseControllerTests() {
         val somePlayer = Player(id, firstName, lastName, teamId)
 
         var request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.id").value(somePlayer.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.first_name").value(somePlayer.firstName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.last_name").value(somePlayer.lastName))
-            .andExpect(MockMvcResultMatchers.jsonPath("\$.team_id").value(somePlayer.teamId))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("\$.id").value(somePlayer.id))
+            .andExpect(jsonPath("\$.first_name").value(somePlayer.firstName))
+            .andExpect(jsonPath("\$.last_name").value(somePlayer.lastName))
+            .andExpect(jsonPath("\$.team_id").value(somePlayer.teamId))
 
         request = MockMvcRequestBuilders.delete(PLAYER + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(status().isOk)
 
         request = MockMvcRequestBuilders.get(PLAYER + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(status().isNotFound)
     }
 }

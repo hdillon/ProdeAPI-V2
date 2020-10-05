@@ -6,7 +6,7 @@ import com.solution.prode.routes.ALL
 import com.solution.prode.routes.COMPETITION
 import com.solution.prode.routes.ID_PARAM
 import org.junit.jupiter.api.Test
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -34,11 +34,11 @@ class CompetitionControllerTests : BaseControllerTests() {
         val competitionThree = Competition(idThree, nameThree)
 
         val request = get(COMPETITION + ALL)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].id").value(competitionOne.id))
             .andExpect(jsonPath("\$.[0].name").value(competitionOne.name))
             .andExpect(jsonPath("\$.[1].id").value(competitionTwo.id))
@@ -56,11 +56,11 @@ class CompetitionControllerTests : BaseControllerTests() {
         val someCompetition = Competition(id, name)
 
         val request = get(COMPETITION + ID_PARAM, id.toString())
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(someCompetition.id))
             .andExpect(jsonPath("\$.name").value(someCompetition.name))
     }
@@ -72,14 +72,14 @@ class CompetitionControllerTests : BaseControllerTests() {
         val newCompetition = Competition(name = name)
 
         var request = post(COMPETITION)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(newCompetition.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
         val responseAsString = mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").isNotEmpty)
             .andExpect(jsonPath("\$.name").value(newCompetition.name))
             .andReturn().response.contentAsString
@@ -87,11 +87,11 @@ class CompetitionControllerTests : BaseControllerTests() {
         val responseCompetition = objectMapper.readValue(responseAsString, Competition::class.java)
 
         request = get(COMPETITION + ID_PARAM, responseCompetition.id)
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(responseCompetition.id))
             .andExpect(jsonPath("\$.name").value(newCompetition.name))
     }
@@ -105,8 +105,8 @@ class CompetitionControllerTests : BaseControllerTests() {
         val updatedCompetition = Competition(id, newName)
 
         var request = put(COMPETITION + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
+            .accept(APPLICATION_JSON)
             .content(updatedCompetition.toJson())
             .characterEncoding(Charsets.UTF_8.name())
 
@@ -116,7 +116,7 @@ class CompetitionControllerTests : BaseControllerTests() {
             .andExpect(jsonPath("\$.name").value(updatedCompetition.name))
 
         request = get(COMPETITION + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
@@ -133,7 +133,7 @@ class CompetitionControllerTests : BaseControllerTests() {
         val someCompetition = Competition(id, name)
 
         var request = get(COMPETITION + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
@@ -141,13 +141,13 @@ class CompetitionControllerTests : BaseControllerTests() {
             .andExpect(jsonPath("\$.name").value(someCompetition.name))
 
         request = delete(COMPETITION + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isOk)
 
         request = get(COMPETITION + ID_PARAM, id.toString())
-            .contentType(MediaType.APPLICATION_JSON)
+            .contentType(APPLICATION_JSON)
 
         mockMvc.perform(request)
             .andExpect(status().isNotFound)

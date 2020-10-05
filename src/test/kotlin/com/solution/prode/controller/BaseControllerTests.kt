@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 abstract class BaseControllerTests : BaseTests() {
 
     @Autowired
-    protected
-    lateinit var mockMvc: MockMvc
+    protected lateinit var mockMvc: MockMvc
 
     @Autowired
     lateinit var objectMapper: ObjectMapper

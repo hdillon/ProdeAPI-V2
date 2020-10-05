@@ -1,13 +1,12 @@
 package com.solution.prode.service
 
-import com.solution.prode.constants.CacheKeys.ALL_TEAMS
+import com.solution.prode.constants.CacheKeys.ALL_TEAMS_KEY
 import com.solution.prode.exception.InternalException
 import com.solution.prode.exception.ResourceNotFoundException
+import com.solution.prode.manager.ProdeCacheManager
 import com.solution.prode.model.Team
 import com.solution.prode.repository.TeamRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,20 +15,27 @@ class TeamService {
     @Autowired
     private lateinit var teamRepository: TeamRepository
 
-    @Cacheable(value = [ALL_TEAMS], keyGenerator = "CacheKeyGenerator", cacheManager = "cacheManagerOneDay")
-    fun findAllTeams(): List<Team> = teamRepository.findAll().toList()
+    @Autowired
+    private lateinit var prodeCacheManager: ProdeCacheManager
+
+    fun findAllTeams(): List<Team> {
+
+        val teams = teamRepository.findAll().toList()
+        prodeCacheManager.saveAllTeams(ALL_TEAMS_KEY, teams)
+
+        return teams
+    }
 
     fun findTeamById(id: Long): Team = validateTeamExists(id)
 
-    @CacheEvict(value = [ALL_TEAMS], allEntries = true)
     fun saveTeam(newTeam: Team): Team {
 
         validateTeamNameNotExists(newTeam.name)
+        prodeCacheManager.evictAllTeams(ALL_TEAMS_KEY)
 
         return teamRepository.save(newTeam)
     }
 
-    @CacheEvict(value = [ALL_TEAMS], allEntries = true)
     fun updateTeam(teamId: Long, updatedTeam: Team): Team {
 
         validateTeamNameNotExists(updatedTeam.name)
@@ -39,16 +45,17 @@ class TeamService {
         updatedTeam.id = team.id
 
         teamRepository.save(updatedTeam)
+        prodeCacheManager.evictAllTeams(ALL_TEAMS_KEY)
 
         return updatedTeam
     }
 
-    @CacheEvict(value = [ALL_TEAMS], allEntries = true)
     fun deleteTeam(teamId: Long) {
 
         val team = validateTeamExists(teamId)
 
         teamRepository.delete(team)
+        prodeCacheManager.evictAllTeams(ALL_TEAMS_KEY)
     }
 
     fun validateTeamExists(teamId: Long) =
@@ -63,7 +70,4 @@ class TeamService {
             throw InternalException("Team name $teamName already exists")
         }
     }
-
-    @CacheEvict(value = [ALL_TEAMS], allEntries = true)
-    fun cleanTeamsCache() { }
 }
