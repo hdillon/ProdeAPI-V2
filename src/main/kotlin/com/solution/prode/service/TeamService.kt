@@ -65,9 +65,6 @@ class TeamService {
 
         val team = teamRepository.findTeamByName(teamName)
 
-        if (team != null) {
-
-            throw InternalException("Team name $teamName already exists")
-        }
+        team?.let { throw InternalException("Team name $teamName already exists") }
     }
 }

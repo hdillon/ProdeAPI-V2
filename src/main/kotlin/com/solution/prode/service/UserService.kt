@@ -14,5 +14,5 @@ class UserService {
     fun save(user: User) = userRepository.save(user)
 
     fun findByUserNameOrEmail(username: String?, email: String) =
-            userRepository.findByUsernameOrEmail(username ?: "", email)
+        userRepository.findByUsernameOrEmail(username ?: "", email)
 }

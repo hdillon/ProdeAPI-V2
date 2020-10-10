@@ -75,9 +75,6 @@ class UserManager {
 
         val user = userService.findByUserNameOrEmail(username, email)
 
-        if (user != null) {
-
-            throw BadRequestException("User name or email already exists")
-        }
+        user?.let { throw BadRequestException("User name or email already exists") }
     }
 }

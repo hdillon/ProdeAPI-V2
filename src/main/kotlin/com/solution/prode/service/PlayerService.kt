@@ -61,9 +61,6 @@ class PlayerService {
 
         val player = playerRepository.findByFirstNameAndLastNameAndTeamId(newPlayer.firstName, newPlayer.lastName, newPlayer.teamId)
 
-        if (player != null) {
-
-            throw BadRequestException("Player ${newPlayer.firstName} ${newPlayer.lastName} already exists")
-        }
+        player?.let { throw BadRequestException("Player ${newPlayer.firstName} ${newPlayer.lastName} already exists") }
     }
 }

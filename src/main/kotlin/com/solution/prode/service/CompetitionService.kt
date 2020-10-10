@@ -49,9 +49,6 @@ class CompetitionService {
 
         val competition = competitionRepository.findByName(newCompetition.name)
 
-        if (competition != null) {
-
-            throw BadRequestException("Competition with name ${newCompetition.name} already exists")
-        }
+        competition?.let { throw BadRequestException("Competition with name ${newCompetition.name} already exists") }
     }
 }

@@ -61,9 +61,6 @@ class ProdeService {
 
         val prode = prodeRepository.findByNameAndCompetitionId(newProde.name, newProde.competitionId)
 
-        if (prode != null) {
-
-            throw BadRequestException("Prode ${newProde.name} already exists")
-        }
+        prode?.let { throw BadRequestException("Prode ${newProde.name} already exists") }
     }
 }
