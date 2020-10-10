@@ -62,12 +62,12 @@ class UserDetailsImpl(
         fun create(user: User?): UserDetailsImpl {
             val authorities: List<GrantedAuthority>? = user?.roles?.stream()?.map { role: Role -> SimpleGrantedAuthority(role.name!!.name) }?.collect(Collectors.toList())
             return UserDetailsImpl(
-                    user?.id,
-                    user?.name,
-                    user?.username!!,
-                    user?.email,
-                    user?.password!!,
-                    authorities
+                user?.id,
+                user?.name,
+                user?.username!!,
+                user?.email,
+                user?.password!!,
+                authorities
             )
         }
     }

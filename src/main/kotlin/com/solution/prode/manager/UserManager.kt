@@ -41,16 +41,16 @@ class UserManager {
 
         validateUserNotExists(signUpRequest.username, signUpRequest.email)
 
-        val user = User()
-        user.email = signUpRequest.email
-        user.name = signUpRequest.name
-        user.username = signUpRequest.username
-        user.password = (passwordEncoder.encode(signUpRequest.password))
-
         val userRole: Role = roleService.findByName(RoleName.ROLE_USER)
             ?: throw InternalException("User Role not exists")
 
-        user.roles = setOf(userRole)
+        val user = User().apply {
+            email = signUpRequest.email
+            name = signUpRequest.name
+            roles = setOf(userRole)
+            username = signUpRequest.username
+            password = (passwordEncoder.encode(signUpRequest.password))
+        }
 
         return userService.save(user)
     }

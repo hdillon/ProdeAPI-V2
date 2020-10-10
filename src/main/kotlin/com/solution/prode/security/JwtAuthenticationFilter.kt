@@ -52,7 +52,9 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
         return if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             bearerToken.substring(7, bearerToken.length)
-        } else null
+        } else {
+            null
+        }
     }
 
     companion object {

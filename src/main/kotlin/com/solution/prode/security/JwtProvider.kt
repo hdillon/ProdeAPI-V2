@@ -26,35 +26,35 @@ class JwtProvider {
 
     fun generateToken(authentication: Authentication): String {
 
-        val userDetail: UserDetailsImpl = authentication.getPrincipal() as UserDetailsImpl
+        val userDetail: UserDetailsImpl = authentication.principal as UserDetailsImpl
         val now = Date()
-        val expiryDate = Date(now.getTime() + tokenExpiration)
+        val expiryDate = Date(now.time + tokenExpiration)
         // To generate new valid secretkeys:
         // SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS51
         // String base64Key = Encoders.BASE64.encode(key.getEncoded());
         val apiKeySecretBytes: ByteArray = DatatypeConverter.parseBase64Binary(secretKey)
-        val signingKey: Key = SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS512.getJcaName())
+        val signingKey: Key = SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS512.jcaName)
         return Jwts.builder()
-                .setSubject((userDetail.id ?: 0).toString())
-                .setIssuedAt(Date())
-                .setExpiration(expiryDate)
-                .signWith(signingKey, SignatureAlgorithm.HS512)
-                .compact()
+            .setSubject((userDetail.id ?: 0).toString())
+            .setIssuedAt(Date())
+            .setExpiration(expiryDate)
+            .signWith(signingKey, SignatureAlgorithm.HS512)
+            .compact()
     }
 
     fun getUserIdFromJWT(token: String?): Long {
 
         val claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
-                .body
+            .setSigningKey(secretKey)
+            .parseClaimsJws(token)
+            .body
+
         return claims.subject.toLong()
     }
 
     fun validateToken(authToken: String?): Boolean {
 
         try {
-
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken)
             return true
         } catch (ex: MalformedJwtException) {
@@ -68,6 +68,7 @@ class JwtProvider {
         } catch (ex: Exception) {
             logger.error("Token error occurred.")
         }
+
         return false
     }
 
