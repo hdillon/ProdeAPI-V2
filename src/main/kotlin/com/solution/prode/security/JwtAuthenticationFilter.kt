@@ -24,17 +24,14 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
 
         try {
-
             val jwt = getJwtFromRequest(request)
-            if (StringUtils.hasText(jwt) && jwtProvider!!.validateToken(jwt)) {
+
+            if (StringUtils.hasText(jwt) && userDetailsService != null && jwtProvider != null && jwtProvider.validateToken(jwt)) {
+
                 val userId = jwtProvider.getUserIdFromJWT(jwt)
-                /*
-                    Note that you could also encode the user's username and roles inside JWT claims
-                    and create the UserDetails object by parsing those claims from the JWT.
-                    That would avoid the following database hit. It's completely up to you.
-                 */
-                val userDetails = userDetailsService!!.loadUserById(userId)
+                val userDetails = userDetailsService.loadUserById(userId)
                 val authentication = UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authentication
             }

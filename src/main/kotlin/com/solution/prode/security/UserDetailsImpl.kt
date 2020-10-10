@@ -60,13 +60,13 @@ class UserDetailsImpl(
     companion object {
 
         fun create(user: User?): UserDetailsImpl {
-            val authorities: List<GrantedAuthority>? = user?.roles?.stream()?.map { role: Role -> SimpleGrantedAuthority(role.name!!.name) }?.collect(Collectors.toList())
+            val authorities: List<GrantedAuthority>? = user?.roles?.stream()?.map { role: Role -> SimpleGrantedAuthority(role.name?.name) }?.collect(Collectors.toList())
             return UserDetailsImpl(
                 user?.id,
                 user?.name,
-                user?.username!!,
+                user?.username ?: "",
                 user?.email,
-                user?.password!!,
+                user?.password ?: "",
                 authorities
             )
         }
