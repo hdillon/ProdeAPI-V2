@@ -1,9 +1,11 @@
 package com.solution.prode.service
 
+import com.solution.prode.constants.ErrorCodes.PRODE_ALREADY_EXISTS
 import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Prode
 import com.solution.prode.repository.ProdeRepository
+import com.solution.prode.util.MessageTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -15,6 +17,9 @@ class ProdeService {
 
     @Autowired
     private lateinit var competitionService: CompetitionService
+
+    @Autowired
+    private lateinit var messageTranslator: MessageTranslator
 
     fun findAll(): List<Prode> = prodeRepository.findAllByOrderByIdAsc().toList()
 
@@ -61,6 +66,6 @@ class ProdeService {
 
         val prode = prodeRepository.findByNameAndCompetitionId(newProde.name, newProde.competitionId)
 
-        prode?.let { throw BadRequestException("Prode ${newProde.name} already exists") }
+        prode?.let { throw BadRequestException(messageTranslator.getMessage(PRODE_ALREADY_EXISTS, arrayOf(newProde.name))) }
     }
 }

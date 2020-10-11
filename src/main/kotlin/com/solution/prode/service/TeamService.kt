@@ -1,11 +1,13 @@
 package com.solution.prode.service
 
 import com.solution.prode.constants.CacheKeys.ALL_TEAMS_KEY
-import com.solution.prode.exception.InternalException
+import com.solution.prode.constants.ErrorCodes.TEAM_NAME_ALREADY_EXISTS
+import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.manager.ProdeCacheManager
 import com.solution.prode.model.Team
 import com.solution.prode.repository.TeamRepository
+import com.solution.prode.util.MessageTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -17,6 +19,9 @@ class TeamService {
 
     @Autowired
     private lateinit var prodeCacheManager: ProdeCacheManager
+
+    @Autowired
+    private lateinit var messageTranslator: MessageTranslator
 
     fun findAllTeams(): List<Team> {
 
@@ -65,6 +70,6 @@ class TeamService {
 
         val team = teamRepository.findTeamByName(teamName)
 
-        team?.let { throw InternalException("Team name $teamName already exists") }
+        team?.let { throw BadRequestException(messageTranslator.getMessage(TEAM_NAME_ALREADY_EXISTS, arrayOf(teamName))) }
     }
 }

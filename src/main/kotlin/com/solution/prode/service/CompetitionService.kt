@@ -1,9 +1,11 @@
 package com.solution.prode.service
 
+import com.solution.prode.constants.ErrorCodes.COMPETITION_ALREADY_EXISTS
 import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Competition
 import com.solution.prode.repository.CompetitionRepository
+import com.solution.prode.util.MessageTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -12,6 +14,9 @@ class CompetitionService {
 
     @Autowired
     private lateinit var competitionRepository: CompetitionRepository
+
+    @Autowired
+    private lateinit var messageTranslator: MessageTranslator
 
     fun findAll(): List<Competition> = competitionRepository.findAllByOrderByIdAsc().toList()
 
@@ -49,6 +54,10 @@ class CompetitionService {
 
         val competition = competitionRepository.findByName(newCompetition.name)
 
-        competition?.let { throw BadRequestException("Competition with name ${newCompetition.name} already exists") }
+        competition?.let {
+            throw BadRequestException(messageTranslator.getMessage(
+                COMPETITION_ALREADY_EXISTS, arrayOf(newCompetition.name)
+            ))
+        }
     }
 }

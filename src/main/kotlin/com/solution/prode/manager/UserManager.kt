@@ -1,5 +1,6 @@
 package com.solution.prode.manager
 
+import com.solution.prode.constants.ErrorCodes.USER_ALREADY_EXISTS
 import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.InternalException
 import com.solution.prode.model.Role
@@ -11,6 +12,7 @@ import com.solution.prode.payload.response.LoginResponse
 import com.solution.prode.security.JwtProvider
 import com.solution.prode.service.RoleService
 import com.solution.prode.service.UserService
+import com.solution.prode.util.MessageTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -36,6 +38,9 @@ class UserManager {
 
     @Autowired
     private lateinit var jwtProvider: JwtProvider
+
+    @Autowired
+    private lateinit var messageTranslator: MessageTranslator
 
     fun signUp(signUpRequest: SignUpRequest): User {
 
@@ -75,6 +80,6 @@ class UserManager {
 
         val user = userService.findByUserNameOrEmail(username, email)
 
-        user?.let { throw BadRequestException("User name or email already exists") }
+        user?.let { throw BadRequestException(messageTranslator.getMessage(USER_ALREADY_EXISTS)) }
     }
 }

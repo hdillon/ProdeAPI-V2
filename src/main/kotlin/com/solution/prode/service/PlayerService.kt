@@ -1,9 +1,11 @@
 package com.solution.prode.service
 
+import com.solution.prode.constants.ErrorCodes.PLAYER_ALREADY_EXISTS
 import com.solution.prode.exception.BadRequestException
 import com.solution.prode.exception.ResourceNotFoundException
 import com.solution.prode.model.Player
 import com.solution.prode.repository.PlayerRepository
+import com.solution.prode.util.MessageTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -15,6 +17,9 @@ class PlayerService {
 
     @Autowired
     private lateinit var teamService: TeamService
+
+    @Autowired
+    private lateinit var messageTranslator: MessageTranslator
 
     fun findAll(): List<Player> = playerRepository.findAllByOrderByIdAsc().toList()
 
@@ -61,6 +66,10 @@ class PlayerService {
 
         val player = playerRepository.findByFirstNameAndLastNameAndTeamId(newPlayer.firstName, newPlayer.lastName, newPlayer.teamId)
 
-        player?.let { throw BadRequestException("Player ${newPlayer.firstName} ${newPlayer.lastName} already exists") }
+        player?.let {
+            throw BadRequestException(messageTranslator.getMessage(
+                PLAYER_ALREADY_EXISTS, arrayOf(newPlayer.firstName, newPlayer.lastName)
+            ))
+        }
     }
 }
